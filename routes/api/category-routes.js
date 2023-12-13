@@ -79,9 +79,16 @@ router.delete('/:id', async (req, res) => {
     res.json({ message: 'Category deleted successfully' });
   } catch (error) {
     console.error(error);
+
+    // Check if the error is a foreign key constraint violation
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({ error: 'Cannot delete category with associated products' });
+    }
+
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 module.exports = router;
 
